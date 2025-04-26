@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <header>
+        <h1 align="center" style="font-size: 50px; font-style: italic;"><b>Currículo de Vitor Alexandre</b></h1>
+    </header>
+
+    <hr>
+
+    <nav style="display: flex; flex-flow: row; justify-content:space-around; padding: 5px;">
+        <a href="malito:vitorgarciavaz@gmail.com">Email</a>
+        <a href="https://www.linkedin.com/in/vitor-alexandre-garcia-vaz/">Linkedin</a>
+        <a href="https://www.instagram.com/vitor_gvaz/">Instagram</a>
+    </nav>
+
+    <hr>
+    
+    <main style="display: flex; flex-flow: row; justify-content: center;">
+        <section style ="padding: 0px 80px 0px 100px;" align="center">
+            <h2>Dados Pessoais</h2>
+            <p>Nome: Vitor Alexandre Garcia Vaz</p>
+            <p>Idade: 20 anos</p>
+            <p>Data de Nascimento: 24/11/2004</p>
+            <img 
+                src="https://media.licdn.com/dms/image/v2/D5603AQFFODx94bu0YQ/profile-displayphoto-shrink_200_200/B56ZTir2XwGQAc-/0/1738969934137?e=1750896000&v=beta&t=ZYAV_AEXcbew6exQvM-zc9qBrwF0gQC2_njkPBaHvMs"
+                alt="Foto de Vitor Alexandre Garcia Vaz"   
+                style=" width: 400px; 
+                        height: 400px; 
+                        border-radius: 80%;
+                        "
+                title="Salve"
+                />
+        </section>
+        <section style ="padding: 0px 100px 0px 100px;">
+            <h2 align="center">Línguas</h2>
+            <table border="1" style="border-style: double; width: 300px; height: 100px;">
+                <thead>
+                    <tr>
+                        <th>Idioma</th>
+                        <th>Nível</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Português</td>
+                        <td>Avançado</td>
+                    </tr>
+                </tbody>
+                <tbody>
+                    <tr>
+                        <td>Inglês</td>
+                        <td>Baixo</td>
+                    </tr>
+            </table>
+        </section>
+        <section style ="padding: 0px 100px 0px 100px; font-size: 20px;">
+            <h2 align="center">Habilidades</h2>
+            <ul>
+                <li>HTML</li>
+                <li>CSS</li>
+                <li>C</li>
+                <li>C++</li>
+                <li>Jython</li>
+            </ul>
+        </section>
+    </main>
+
+    <hr>
+
+    <footer align="center">
+        <h2 style="font-size: 60px; font-style: italic;">Deseja falar comigo?</h2>
+        <form method="post" action="#" style="font-size: 30px;">
+            <fieldset>
+                <legend><b>Informações Pessoais</b></legend>
+                <label for="nome">Nome:</label>
+                <input 
+                    type="text" 
+                    id="nome" 
+                    name="nome" 
+                    placeholder="Digite seu nome"
+                    style="padding: 5px; width: 200px;"
+                    required
+                >
+                <br><br>
+                <label for="email">Email:</label>
+                <input 
+                    type="text" 
+                    id="email" 
+                    name="email" 
+                    placeholder="Digite seu email"
+                    style="padding: 5px; width: 200px;"
+                    required
+                >
+            </fieldset>
+            <br><br>
+            <fieldset>
+                <legend><b>Motivo do contato</b></legend>
+                <label for="assunto">Assunto:</label>
+                <select
+                    id="assunto" 
+                    name="assunto" 
+                    style="padding: 5px; width: 200px;"
+                    required
+                >
+                    <option value="duvida" selected>Dúvida</option>
+                    <option value="elogia">Elogio</option>
+                    <option value="oportunidade">Oportunidade</option>
+                    <option value="outro">Outro</option>
+                </select>
+                <br><br>
+                <label for="mensagem">Mensagem:</label>
+                <br>
+                <textarea 
+                    type="text" 
+                    id="mensagem" 
+                    name="mensgaem"
+                    rows="10"
+                    cols="70" 
+                    placeholder="Digite sua mensagem"
+                    style="padding: 5px; "
+                    required
+                    >
+                </textarea>
+            </fieldset>
+            <br>
+            <button type="submit"
+                style="
+                    padding: 10px 20px 10px 20px;
+                    font-size: 20px;
+                "
+
+            >
+                Enviar
+            </button>
+        </form>
+    </footer>
+</body>
+</html>
