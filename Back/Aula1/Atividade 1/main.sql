@@ -62,17 +62,17 @@ INNER JOIN categorias c ON t.categoria_id = c.id
 INNER JOIN usuarios u ON t.usuario_id = u.id
 WHERE c.prioridade = 1;
 
--- muda estado da tarefa para concluída quando possui prioridade 1 em sua categoria
+-- Muda estado da tarefa para concluída quando possui prioridade 1 em sua categoria
 UPDATE tarefas
 SET concluida = TRUE
 FROM categorias c
 WHERE c.id = tarefas.categoria_id AND c.prioridade = 1;
 
--- deleta tarefas que foram concluídas
+-- Deleta tarefas que foram concluídas
 DELETE FROM tarefas
 WHERE concluida = TRUE;
 
--- exibe tabela de tarefas
+-- Exibe tabela de tarefas
 SELECT * FROM tarefas;
 
 
