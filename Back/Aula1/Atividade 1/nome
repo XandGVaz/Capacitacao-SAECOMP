@@ -1,9 +1,9 @@
--- LIMPA TABELAS PARA FAZER TESTES
+-- Limpa tabelas para fazer testes
 DROP TABLE IF EXISTS tarefas CASCADE;
 DROP TABLE IF EXISTS usuarios CASCADE;
 DROP TABLE IF EXISTS categorias CASCADE;
 
--- CRIAÇÃO DE TABELAS
+-- Criação de tabelas
 create TABLE IF NOT EXISTS usuarios(
 	id				BIGSERIAL 		PRIMARY KEY,
 	username		VARCHAR(50) 	UNIQUE NOT NULL,
@@ -27,7 +27,7 @@ create TABLE IF NOT EXISTS tarefas(
 	concluida		BOOLEAN			DEFAULT FALSE
 );
 
--- INSERÇÃO DE DADOS
+-- Inserção de valores
 INSERT INTO usuarios
 (username, nome)
 VALUES
@@ -51,7 +51,8 @@ VALUES
 ('fazer desenho da peça', 2, 2),
 ('media a peça', 3, 2);
 
--- CONSULTA DE RELAÇÂO TÌTULO TAREFA -> NOME DA CATEGORIA -> NOME DO USUÀRIO RESPONSÁVEL
+-- Consulta relação TÍTULO TAREFA -> NOME DA CATEGORIA -> NOME DO USUÀRIO RESPONSÁVEL
+--de tarefas que tem prioridade 1 em sua categoria
 SELECT
 	t.titulo AS titulo_tarefa,
 	u.nome AS nome_usuario,
@@ -59,18 +60,19 @@ SELECT
 FROM tarefas t
 INNER JOIN categorias c ON t.categoria_id = c.id
 INNER JOIN usuarios u ON t.usuario_id = u.id
-WHERE t.titulo = 'testar resistores';
+WHERE c.prioridade = 1;
 
--- MUDA ESTATOS DE UMA TAREFA PARA CONCLUIDA
+-- muda estado da tarefa para concluída quando possui prioridade 1 em sua categoria
 UPDATE tarefas
 SET concluida = TRUE
 FROM categorias c
 WHERE c.id = tarefas.categoria_id AND c.prioridade = 1;
 
-
--- DELETA TAREFAS QUE FORAM CONCLUÍDAS
+-- deleta tarefas que foram concluídas
 DELETE FROM tarefas
 WHERE concluida = TRUE;
 
+-- exibe tabela de tarefas
+SELECT * FROM tarefas;
 
 
