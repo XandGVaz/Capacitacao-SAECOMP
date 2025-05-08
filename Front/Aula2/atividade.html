@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    body{
+        background-color: plum;
+        display: flex;
+        justify-content: center;
+    }
+    .card{
+        background-color: white;
+        
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        
+        padding: 0 rem;
+        width: 400px;
+        height: 600px;
+        
+        border-radius: 20px;
+        box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.2);
+    }
+    .icon{
+        border-radius: 100%;
+        border: 1px solid rgb(185, 164, 164);
+        margin: -50px 0px 0px 0px;
+        width: 100px;
+    }
+    .backImgae{
+        width: 100%;
+        border-radius: 20px 20px 0px 0px;
+    }
+    .title{
+        color: black;
+        font-size: 20px;
+        font-weight: bold;
+        margin: 20px 0px 5px 0px;
+    }
+    .subtitle{
+        opacity: 50%;
+        color: rgb(0, 0, 0);
+        font-style:normal;
+        font-size: 15px;
+        font-weight: bolder;
+        margin: 0px 0px 10px 0px;
+    }
+    .statitcs{
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        gap: 100px;
+        padding: 0px 20px 0px 20px;
+        margin: 0px 0px 20px 0px;
+    }
+    .number h1{
+        text-align: center;
+        font-size: 30px;
+        color: rgb(17, 146, 221);
+        font-weight: bold;
+        margin: 0px 0px 2px 0px;
+    }
+    .number p{
+        text-align: center;
+        opacity: 50%;
+        font-size: 15px;
+        color: rgb(165, 190, 197);
+        font-weight: bold;
+        margin: 0px 0px 2px 0px;
+    }
+    .followBotton{
+        background-color: yellow;
+        font-family: 'Times New Roman', Times, serif;
+        font-size: 20px;
+        border-radius: 20px;
+        font-weight: bold;
+        text-align: center;
+        padding: 15px 150px 15px 150px;
+    }
+    .followBotton:hover{
+        opacity: 50%;
+    }
+    .description{
+        font-size: 18px;
+        color: black;
+        padding: 20px;
+    }
+
+</style>
+<body>
+    <div class="card">
+        <img src="https://recreio.com.br/media/_versions/legacy/2020/03/04/formiga-1220968_widelg.jpeg" class="backImgae">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSrXRkAnNfLccgmuCp2Qp8XKxLMpehhnLdkoQ&s" class="icon">
+        <p class="title">Morgan Sweeney</p>
+        <p class="subtitle">Ant Collector</p>
+        <div class="statitcs">
+            <div class="number">
+                <h1>12</h1>
+                <p>Followers</p>
+            </div>
+            <div class="number">
+                <h1>1000</h1>
+                <p>Following</p>
+            </div>
+        </div>
+        <a class="followBotton">Follow</a>
+        <p class="description">Morgan has collect ants since they wre six years od and now has many dozen ants but none in their pants</p>
+    </div>
+</body>
+</html>
