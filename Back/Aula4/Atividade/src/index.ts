@@ -12,36 +12,51 @@ interface Tarefa{
     status: Status;
 }
 
-let tarefas: Tarefa[] = [];
- 
-function adicionarTarefa(listaTarefas: Tarefa[], nomeTarefa: string): Tarefa{
-    const novaTarefa: Tarefa = {
-        id: listaTarefas.length +1,
-        titulo: nomeTarefa,
-        status:  Status.Pendente,
-    }
-    listaTarefas.push(novaTarefa);
-    return novaTarefa;
+/*============================================================================================== */
+// Vem dom servidor postgresSQL
+const poolConfig = {
+    host: 'localhost',
+    port: 5432,
+    user: 'postgres',
+    password: 'postgres',
+    database: 'postgres',
+    ssl: false,
+    max: 6
 }
 
-function listarTarefas(listaTarefas: Tarefa[]): void{
-    listaTarefas.forEach(el => console.log("Id: " + el.id + ", Nome: " + el.titulo + ", Status: " + el.status));
-    console.log('\n');
-}
+// Gerencia a "piscina de conexões" do banco de dados
+//  - Reutiliza conexões
+//  - Gerencia concorrência
+//  - Facilita consultas usando querys (permitindo executar comandos SQL)
+const pool = new Pool(poolConfig);
 
-function concluirTarefa(listaTarefas: Tarefa[], id: number): void{
-    const tarefa = listaTarefas.find((el) => el.id === id);
-    if(tarefa)
-        tarefa.status = Status.Concluida;
-    else 
-        console.log('Tarefa não existente');
-}  
-
-function filtrarPorStatus(listaTarefas: Tarefa[], stt: Status): Tarefa[]{
-    let novaLista: Tarefa[] = [];
-   novaLista = listaTarefas.filter(el => el.status === stt);
-   return novaLista;
-}
+// Querys para cada tipo de requisição tratada na api
+const dbQueryGet = `
+select 
+id,
+titulo,
+status
+from tarefas
+`;
+const dbQueryGetWithStatus = `
+select
+id, 
+titulo, 
+status
+from tarefas
+where tarefas.status = $1
+`;
+const dbQueryPost = `
+insert into tarefas
+(titulo, status)
+values
+($1, $2)
+`;
+const dbQueryPatch = `
+update tarefas
+set status = TRUE
+where tarefas.id = $1 
+`;
 
 /*============================================================================================== */
 
@@ -55,43 +70,97 @@ const port = 3000;
 app.use(express.json()/*Middleware para interpretar corpo de requisições http no formato json*/);
 
 // Define método com que servidor lida com requisições do tipo GET para /tarefas
-app.get('/tarefas', (req: Request, res: Response) => {
-    // Retorna tarefas em formato json
-    res.json(tarefas);
-});
+app.get('/tarefas', async(req: Request, res: Response) => {
+    try{
+        // Recebe linhas da tablr
+        const { rows } = await pool.query(dbQueryGet);
 
-// Modelo dinâmica para lidar requisições GET em /tarefas/status que têm como parâmetro o ID da tarefa desejada
-app.get('/tarefas/status/:status', (req: Request, res: Response) => {
+        // Iguala a lista de tarefas às linhas das tabelas
+        const tarefas : Tarefa[] = rows;
+        
+        // Se a lista de tarefas estiver vazia, avisa o usuário
+        if(!tarefas){
+            res.status(404).json({ message: 'Tabela de tarefas não existente'});
+            return ;
+        }
+
+        // Retorna lista de tarefas
+        res.json(tarefas);
     
-    // Procura tarefas com status enviado por parãmetro na requisição 
-    const tarefasDesejadas = filtrarPorStatus(tarefas, Number(req.params.status));
-
-    // Verifica se alguma tarefa foi encontrada
-    if(!tarefasDesejadas){
-        res.status(404).json({message: 'Nenhuma tarefa não encontrada'});
-        return ;
+    } catch(error){
+        console.log(error);
+        res.status(500).json({ message: 'Erro interno do servidor'});
     }
-    
-    // Retorna tarefa em formato json
-    res.json(tarefasDesejadas);
 });
+
+app.get('/tarefas/status/:status', async(req: Request, res: Response) => {
+    
+    // Obtém status a serem considerados como parâmetro
+    const status: number = Number(req.params.status);
+    try{
+        // Obtém linhas da table que contêm campo status igual o buscado
+        const { rows } = await pool.query(dbQueryGetWithStatus, [status]);
+        
+        // Iguala lista de tarefas às linhas obtidas da table
+        const tarefas: Tarefa[] = rows;
+        
+        // Avisa o usuário caso nenhuma tarefa seja encontrada
+        if(!tarefas){
+            res.status(404).json({ message: 'Tabela de tarefas concluidas não existente'});
+            return;
+        }
+
+        // Retorna tarefas encontradas
+        res.json(tarefas);
+    }catch(error){
+        console.log(error);
+        res.status(500).json({ message: 'Erro interno do servidor'});
+    }
+});
+
 
 // Define método com que servidor lida com requisições do tipo POST para /tarefas
-app.post('/tarefas', (req: Request, res: Response) => {
-    // Adiciona nova tarefa, supondo que req.body é uma string com o nome da tarefa
-    const novaTarefa: Tarefa = adicionarTarefa(tarefas, req.body.titulo);
+app.post('/tarefas', async(req: Request, res: Response) => {
+    
+    // Recebe nova tarefa a ser adicionada do corpo JSON da requisição POST
+    const novaTarefa : Tarefa = req.body;
+    try{
+        // Obtém número de linhas adicionadas na table
+        const { rowCount } = await pool.query(dbQueryPost, [novaTarefa.titulo, novaTarefa.status]);
+        
+        // Se nenhuma linha foi adicionada (erro), avisa usuário
+        if(rowCount === 0){
+            res.status(404).json({message: 'Tarefa não inserida'});
+            return;
+        }
 
-    // Manda mensagem de êxito
-    res.status(201).json(novaTarefa);
+        // Retorna mensagem dizendo que a tarefa enviada foi inserida
+        res.status(201).json({ message: 'Tarefa inserida com sucesso'});
+    }catch(error){
+        console.log(error);
+        res.status(500).json({message: 'Erro interno do servidor'});
+    }
 });
 
 // Modelo dinâmica para lidar com requisições do tipo PATCH para /tarefas levando em conta o parâmetro id
-app.patch('/tarefas/:id', (req: Request, res: Response) => {
-    // Conclui tarefa com id passado por parâmetro
-    concluirTarefa(tarefas, parseInt(req.params.id));
-    
-    // Manda mensagem de êxito
-    res.status(201).json(tarefas);
+app.patch('/tarefas/:id', async(req: Request, res: Response) => {
+    // obtém id passado por parâmetro
+    const id : number = parseInt(req.params.id);
+    try{
+        // Obtém número de linhas com campo status atualizado
+        const {rowCount} = await pool.query(dbQueryPatch, [id]);
+        
+        // Se nenhuma linha foi atualizada (erro), avisa o usuário 
+        if(rowCount === 0){
+            res.status(404).json({ message: 'Nenhuma não atualizada'})
+        }
+
+        // Envia número de linhas atualizadas
+        res.json({ message: `${rowCount} tarefas atualizadas`});
+    }catch(error){
+        console.log(error);
+        res.status(500).json({ message: 'Erro interno do servidor'});
+    }
 });
 
 /*
@@ -104,20 +173,5 @@ app.listen(port, () => {
     console.log(`serving on http://localhost:${port}`);
 });
 
-/*============================================================================================== */
-const poolConfig = {
-    host: 'localhost',
-    port: 5432,
-    user: 'postgres',
-    password: 'postgres',
-    database: 'postgres',
-    ssl: false,
-    max: 6
-}
 
-const pool = new Pool(poolConfig);
 
-const dbQueryGet = `
-select
-
-`
