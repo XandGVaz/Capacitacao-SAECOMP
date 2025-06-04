@@ -1,0 +1,13 @@
+-- Limpa tabelas para fazer testes
+DROP TABLE IF EXISTS tarefas CASCADE;
+
+create TABLE IF NOT EXISTS tarefas(
+	id				BIGSERIAL		PRIMARY KEY,
+	titulo			VARCHAR(50)		NOT NULL,
+	status			BOOLEAN			DEFAULT FALSE
+);
+
+-- Exibe tabela de tarefas
+SELECT * FROM tarefas;
+
+
