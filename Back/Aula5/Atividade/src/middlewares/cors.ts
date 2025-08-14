@@ -15,6 +15,7 @@ export function corsMiddleware (req: Request, res: Response, next: NextFunction)
     if(origin && allowedOrigins.includes(origin)){
         if(!alowedMethodos.includes(req.method)){
             res.status(200).json({ message: `Not allowed to use ${req.method} method`});
+            return;
         }
         next();
     }else{
